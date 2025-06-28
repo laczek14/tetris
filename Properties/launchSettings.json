@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "tetris": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
