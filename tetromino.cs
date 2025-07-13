@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,8 +52,8 @@ namespace tetris
         #region Kwadrat
         public void Kwadrat()
         {
-            Vector2 figura = new Vector2(100, 100);
-            Raylib.DrawRectangleV(Vector, figura, Color.Red);
+            Vector2 figuraK = new Vector2(100, 100);
+            Raylib.DrawRectangleV(Vector, figuraK, Color.Red);
         }
         #endregion
         #region I
@@ -115,13 +116,61 @@ namespace tetris
         }
         #endregion
         #endregion
+        #region movement
+        public void movement()
+        {
+            if (Raylib.IsKeyPressed(KeyboardKey.A) & Vector.X != 0 & Vector.Y < 450 || Raylib.IsKeyDown(KeyboardKey.A) & Vector.X != 0 & Vector.Y < 450)
+            {
+                Vector.X -= 50;
+            }
+            if (Raylib.IsKeyPressed(KeyboardKey.D) & Vector.X < 700 & Vector.Y < 450 || Raylib.IsKeyDown(KeyboardKey.D) & Vector.X<700 & Vector.Y < 450)
+            {
+                Vector.X += 50;
+            }
+            if (Raylib.IsKeyDown(KeyboardKey.S) & Vector.Y < 450)
+            {
+                // Move down
+                Vector.Y += 50;
+            }
+        }
+        #endregion
         public void Game()
         {
             bool IsGamerunning = true;
-            while (IsGamerunning)
+            Raylib.InitWindow(800, 600, "tetris ig");
+            while (!Raylib.WindowShouldClose())
             {
-                gambling();
+                if (IsGamerunning)
+                {
+                    if (Vector.Y != 450)
+                    {
+                        Raylib.WaitTime(1);
+                        movement();
+                        Vector.Y += 50;
+                    } 
+                        Raylib.ClearBackground(Color.White);
+                        Raylib.BeginDrawing();
+                       
+                        Raylib.DrawText(Vector.ToString(), 520, 0, 40, Color.Red);
+                        gambling();
+                        DrawGrid(800, 600, 50, Color.LightGray);
+                        Raylib.EndDrawing();
+                }
             }
+         #region Grid
+            static void DrawGrid(int width, int height, int cellSize, Color color)
+            {
+                for (int x = 0; x <= width; x += cellSize)
+                {
+                    Raylib.DrawLine(x, 0, x, height, color);
+                }
+
+                for (int y = 0; y <= height; y += cellSize)
+                {
+                    Raylib.DrawLine(0, y, width, y, color);
+                }
+            }
+            #endregion
         }
     }
 }
