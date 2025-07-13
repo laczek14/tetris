@@ -1,8 +1,10 @@
 ﻿using Raylib_cs;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,108 +16,113 @@ namespace tetris
     // Add timer fields
     double fallInterval = 0.5; // seconds between falls
     double lastFallTime = 0;
+    List<Vector2> SavedPos = new List<Vector2>(); // List to save block positions
+    List<int> SavedBlocks = new List<int>(); // List to save block types (1-7)
+    static int BlockCount = 7; // Total number of block types
         public Vector2 Vector = new Vector2(0, 0);
-        int gamble = Raylib.GetRandomValue(1, 7);
+        int gamble = Raylib.GetRandomValue(1,BlockCount);
         #region gambling
-        public void gambling()
+        public void gambling(int i, Vector2 V = new Vector2())
         {
-            #region if'y
-            if (gamble == 1)
+            #region switch
+
+            switch (i)
             {
-                Kwadrat();
-            }
-            if (gamble == 2)
-            {
-                I();
-            }
-            if (gamble == 3)
-            {
-                Kwadrat();
-            }
-            if (gamble == 4)
-            {
-                LeftL();
-            }
-            if (gamble == 5) 
-            {
-                W();
-            }
-            if (gamble == 6)
-            {
-                Z();
-            }
-            if (gamble == 7) 
-            {
-                LeftZ();
+                case 1:
+                    Square(V);
+                    break;
+
+                case 2:
+                    I(V); 
+                    break;
+
+                case 3:
+                    L(V);
+                    break;
+                case 4:
+                    LeftL(V);
+                    break;
+
+                case 5:
+                    W(V);
+                    break;
+
+                case 6:
+                    Z(V);
+                    break;
+
+                case 7:
+                    LeftZ(V);
+                    break;
             }
             #endregion
         }
         #endregion
         #region tetrominoes
-        #region Kwadrat
-        public void Kwadrat()
+        #region Square
+        public void Square(Vector2 V = new Vector2())
         {
             Vector2 figuraK = new Vector2(100, 100);
-            Raylib.DrawRectangleV(Vector, figuraK, Color.Red);
+            Raylib.DrawRectangleV(V, figuraK, Color.Red);
         }
         #endregion
         #region I
-        public void I()
+        public void I(Vector2 V = new Vector2())
         {
             Vector2 figura = new Vector2(50, 100);
             Vector2 figura2 = new Vector2(50, 200);
-            Raylib.DrawRectangleV(Vector, figura, Color.Brown);
-            Raylib.DrawRectangleV(Vector, figura2, Color.Brown);
+            Raylib.DrawRectangleV(V, figura, Color.Brown);
+            Raylib.DrawRectangleV(V, figura2, Color.Brown);
         }
         #endregion
         #region L
-        public void L()
+        public void L(Vector2 V = new Vector2())
         {
             Vector2 figura1 = new Vector2(50, 150);
             Vector2 figura2 = new Vector2(50, 50);
-            Vector2 vector2 = new Vector2(Vector.X + 50, Vector.Y + 100);
-            Raylib.DrawRectangleV(Vector, figura1, Color.SkyBlue);
+            Vector2 vector2 = new Vector2(V.X + 50, V.Y + 100);
+            Raylib.DrawRectangleV(V, figura1, Color.SkyBlue);
             Raylib.DrawRectangleV(vector2, figura2, Color.SkyBlue);
         }
         #endregion
         #region LeftL
-        public void LeftL()
+        public void LeftL(Vector2 V = new Vector2())
         {
             Vector2 figura1 = new Vector2(50, 150);
             Vector2 figura2 = new Vector2(50, 50);
-            Vector2 vector3 = new Vector2(Vector.X, Vector.Y + 100);
-            Vector2 vector2 = new Vector2(Vector.X + 50, Vector.Y);
+            Vector2 vector3 = new Vector2(V.X, V.Y + 100);
+            Vector2 vector2 = new Vector2(V.X + 50, V.Y);
             Raylib.DrawRectangleV(vector2, figura1, Color.SkyBlue);
             Raylib.DrawRectangleV(vector3, figura2, Color.SkyBlue);
         }
         #endregion
         #region W
-        public void W()
+        public void W(Vector2 V = new Vector2())
         {
             Vector2 figura1 = new Vector2(150,50);
             Vector2 figura2 = new Vector2(50,50);
-            Vector2 vector2 = new Vector2(Vector.X+50,Vector.Y+50);
-            Raylib.DrawRectangleV(Vector,figura1,Color.Beige);
+            Vector2 vector2 = new Vector2(V.X+50,V.Y+50);
+            Raylib.DrawRectangleV(V,figura1,Color.Beige);
             Raylib.DrawRectangleV(vector2,figura2,Color.Beige);
         }
         #endregion
         #region Z
-        public void Z()
+        public void Z(Vector2 V = new Vector2())
         {
             Vector2 figura = new Vector2(50,100);
-            Vector2 vector2 = new Vector2(Vector.X,Vector.Y+50);
-            Vector2 vector3 = new Vector2(Vector.X+50,Vector.Y);
+            Vector2 vector2 = new Vector2(V.X,V.Y+50);
+            Vector2 vector3 = new Vector2(V.X+50,V.Y);
             Raylib.DrawRectangleV(vector2,figura,Color.Violet);
             Raylib.DrawRectangleV(vector3,figura,Color.Violet);
         }
         #endregion
         #region LeftZ
-        public void LeftZ()
+        public void LeftZ(Vector2 V = new Vector2())
         {
             Vector2 figura = new Vector2(50, 100);
-            Vector2 vector2 = new Vector2(Vector.X+50, Vector.Y + 50);
+            Vector2 vector2 = new Vector2(V.X+50, V.Y + 50);
             Raylib.DrawRectangleV(vector2, figura, Color.Violet);
-            Raylib.DrawRectangleV(Vector, figura, Color.Violet);
+            Raylib.DrawRectangleV(V, figura, Color.Violet);
         }
         #endregion
         #endregion
@@ -137,6 +144,23 @@ namespace tetris
             }
         }
         #endregion
+        #region SaveBlock
+        public void SaveBlock()
+        {
+            Vector2 savedPos = Vector; // Save the current position of the block
+            int savedBlock = gamble; // Save the current block type
+            SavedPos.Add(savedPos);
+            SavedBlocks.Add(savedBlock); // Add the saved block type to the list
+            gamble = Raylib.GetRandomValue(1, BlockCount); // Get a new random block type
+        }
+        #endregion
+        public void PrintBlocks()
+        { 
+            foreach (Vector2 V in SavedPos)
+            {
+                
+            }
+        }
         public void Game()
         {
             bool IsGamerunning = true;
@@ -159,9 +183,8 @@ namespace tetris
                 }
                         Raylib.ClearBackground(Color.White);
                         Raylib.BeginDrawing();
-                       
                         Raylib.DrawText(Vector.ToString(), 400, 0, 40, Color.Red);
-                        gambling();
+                        gambling(gamble,Vector);
                         DrawGrid(400, 700, 50, Color.LightGray);
                         Raylib.EndDrawing();
                 }
