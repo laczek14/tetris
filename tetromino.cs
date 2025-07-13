@@ -11,6 +11,9 @@ namespace tetris
 {
     internal class tetromino
     {
+    // Add timer fields
+    double fallInterval = 0.5; // seconds between falls
+    double lastFallTime = 0;
         public Vector2 Vector = new Vector2(0, 0);
         int gamble = Raylib.GetRandomValue(1, 7);
         #region gambling
@@ -119,15 +122,15 @@ namespace tetris
         #region movement
         public void movement()
         {
-            if (Raylib.IsKeyPressed(KeyboardKey.A) & Vector.X != 0 & Vector.Y < 450 || Raylib.IsKeyDown(KeyboardKey.A) & Vector.X != 0 & Vector.Y < 450)
+            if (Raylib.IsKeyPressed(KeyboardKey.A) & Vector.X != 0 & Vector.Y != 550  || Raylib.IsKeyDown(KeyboardKey.A) & Vector.X != 0 & Vector.Y != 550)
             {
                 Vector.X -= 50;
             }
-            if (Raylib.IsKeyPressed(KeyboardKey.D) & Vector.X < 700 & Vector.Y < 450 || Raylib.IsKeyDown(KeyboardKey.D) & Vector.X<700 & Vector.Y < 450)
+            if (Raylib.IsKeyPressed(KeyboardKey.D) & Vector.X < 700 & Vector.Y != 550 || Raylib.IsKeyDown(KeyboardKey.D) & Vector.X<300 & Vector.Y != 550)
             {
                 Vector.X += 50;
             }
-            if (Raylib.IsKeyDown(KeyboardKey.S) & Vector.Y < 450)
+            if (Raylib.IsKeyDown(KeyboardKey.S) & Vector.Y != 550)
             {
                 // Move down
                 Vector.Y += 50;
@@ -137,23 +140,29 @@ namespace tetris
         public void Game()
         {
             bool IsGamerunning = true;
-            Raylib.InitWindow(800, 600, "tetris ig");
+            Raylib.InitWindow(600, 700, "tetris ig");
+            lastFallTime = Raylib.GetTime(); // Initialize timer
+
             while (!Raylib.WindowShouldClose())
             {
                 if (IsGamerunning)
                 {
-                    if (Vector.Y != 450)
-                    {
-                        Raylib.WaitTime(1);
-                        movement();
-                        Vector.Y += 50;
-                    } 
+                double currentTime = Raylib.GetTime();
+
+                // Move block down every fallInterval seconds
+                if (Vector.Y != 550 && currentTime - lastFallTime >= fallInterval)
+                {
+                    Vector.Y += 50;
+                    movement();
+                    // Reset the timer
+                    lastFallTime = currentTime;
+                }
                         Raylib.ClearBackground(Color.White);
                         Raylib.BeginDrawing();
                        
-                        Raylib.DrawText(Vector.ToString(), 520, 0, 40, Color.Red);
+                        Raylib.DrawText(Vector.ToString(), 400, 0, 40, Color.Red);
                         gambling();
-                        DrawGrid(800, 600, 50, Color.LightGray);
+                        DrawGrid(400, 700, 50, Color.LightGray);
                         Raylib.EndDrawing();
                 }
             }
