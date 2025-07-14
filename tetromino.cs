@@ -167,10 +167,12 @@ namespace tetris
             }
         }
         #endregion
+
         public void Collision()
         {
-            Raylib.CheckCollisionRecs(gambling(gamble,Vector), PrintBlocks());
+            // placeholder for collision detection logic, i dont know how to do it yet
         }
+
         public void Game()
         {
             bool IsGamerunning = true;
