@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace tetris
 {
-    internal class tetromino
+    internal class Tetromino
     {
     // Add timer fields
     double fallInterval = 0.5; // seconds between falls
@@ -151,15 +151,25 @@ namespace tetris
             int savedBlock = gamble; // Save the current block type
             SavedPos.Add(savedPos);
             SavedBlocks.Add(savedBlock); // Add the saved block type to the list
+            Vector = new Vector2(0, 0); // Reset the position of the block
             gamble = Raylib.GetRandomValue(1, BlockCount); // Get a new random block type
         }
         #endregion
+        #region PrintBlocks
         public void PrintBlocks()
         { 
-            foreach (Vector2 V in SavedPos)
+            foreach (var  V in SavedPos)
             {
-                
+                foreach(var i in SavedBlocks )
+                { 
+                    gambling(i,V); // Draw the saved blocks at their saved positions
+                }
             }
+        }
+        #endregion
+        public void Collision()
+        {
+            Raylib.CheckCollisionRecs(gambling(gamble,Vector), PrintBlocks());
         }
         public void Game()
         {
@@ -181,9 +191,14 @@ namespace tetris
                     // Reset the timer
                     lastFallTime = currentTime;
                 }
+                else if (Vector.Y == 550)
+                    {
+                    SaveBlock(); // Save the block when it reaches the bottom
+                   }
                         Raylib.ClearBackground(Color.White);
                         Raylib.BeginDrawing();
                         Raylib.DrawText(Vector.ToString(), 400, 0, 40, Color.Red);
+                        PrintBlocks();
                         gambling(gamble,Vector);
                         DrawGrid(400, 700, 50, Color.LightGray);
                         Raylib.EndDrawing();

@@ -6,7 +6,7 @@ namespace tetris
     {
         static void Main(string[] args) 
         {
-            tetromino t = new tetromino();
+            Tetromino t = new Tetromino();
             t.Game();
         }
     }
